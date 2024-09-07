@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateJournalTransfersTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('journal_transfer', function (Blueprint $table) {
+            $table->id('transfer_id')->unsigned();
+            $table->unsignedInteger('journal_id');
+            $table->unsignedInteger('account_destination');
+            $table->double('admin_fee');
+
+            $table->primary('transfer_id');
+            $table->foreign('journal_id')->references('journal_id')->on('journal')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('journal_transfers');
+    }
+}
