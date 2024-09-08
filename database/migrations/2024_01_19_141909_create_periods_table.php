@@ -14,13 +14,11 @@ class CreatePeriodsTable extends Migration
     public function up()
     {
         Schema::create('period', function (Blueprint $table) {
-            $table->id('period_id')->unsigned();
+            $table->unsignedInteger('period_id')->autoIncrement();
             $table->string('period_name', 6);
             $table->tinyInteger('period_status')->unsigned()->comment('0=close; 1=open;');
             $table->unsignedInteger('updated_by');
             $table->dateTime('updated_at');
-
-            $table->primary('period_id');
         });
     }
 

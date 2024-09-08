@@ -14,11 +14,10 @@ class CreateJournalAttachmentTable extends Migration
     public function up()
     {
         Schema::create('journal_attachment', function (Blueprint $table) {
-            $table->id('attachment_id')->unsigned();
+            $table->unsignedInteger('attachment_id')->autoIncrement();
             $table->unsignedInteger('journal_id');
             $table->string('attachment_name', 250);
 
-            $table->primary('attachment_id');
             $table->foreign('journal_id')->references('journal_id')->on('journal')->onDelete('cascade');
         });
     }

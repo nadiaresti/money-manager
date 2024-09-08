@@ -14,14 +14,12 @@ class CreateCategoriesTable extends Migration
     public function up()
     {
         Schema::create('category', function (Blueprint $table) {
-            $table->id('category_id')->unsigned();
+            $table->unsignedInteger('category_id')->autoIncrement();
             $table->string('category_name', 25);
             $table->tinyInteger('category_type');
             $table->unsignedInteger('parent_id')->nullable();
             $table->unsignedInteger('updated_by');
             $table->dateTime('updated_at');
-
-            $table->primary('category_id');
         });
     }
 

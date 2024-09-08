@@ -14,13 +14,11 @@ class CreateAccountGroupsTable extends Migration
     public function up()
     {
         Schema::create('account_group', function (Blueprint $table) {
-            $table->id('group_id')->unsigned();
+            $table->unsignedInteger('group_id')->autoIncrement();
             $table->string('group_code', 10)->unique();
             $table->string('group_name', 25);
             $table->unsignedInteger('updated_by');
             $table->dateTime('updated_at');
-
-            $table->primary('group_id');
         });
     }
 

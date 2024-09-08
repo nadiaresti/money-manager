@@ -14,12 +14,11 @@ class CreateJournalTransfersTable extends Migration
     public function up()
     {
         Schema::create('journal_transfer', function (Blueprint $table) {
-            $table->id('transfer_id')->unsigned();
+            $table->unsignedInteger('transfer_id')->autoIncrement();
             $table->unsignedInteger('journal_id');
             $table->unsignedInteger('account_destination');
             $table->double('admin_fee');
 
-            $table->primary('transfer_id');
             $table->foreign('journal_id')->references('journal_id')->on('journal')->onDelete('cascade');
         });
     }

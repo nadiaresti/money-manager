@@ -14,7 +14,7 @@ class CreateJournalsTable extends Migration
     public function up()
     {
         Schema::create('journal', function (Blueprint $table) {
-            $table->id('journal_id')->unsigned();
+            $table->unsignedInteger('journal_id')->autoIncrement();
             $table->unsignedInteger('period_id');
             $table->unsignedInteger('category_id');
             $table->unsignedInteger('account_id');
@@ -24,8 +24,6 @@ class CreateJournalsTable extends Migration
             $table->string('journal_description', 250)->nullable();
             $table->unsignedInteger('updated_by');
             $table->dateTime('updated_at');
-
-            $table->primary('journal_id');
         });
     }
 
