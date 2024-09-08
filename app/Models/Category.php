@@ -46,9 +46,9 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
-	public function journal()
+	public function transaction()
 	{
-		return $this->hasMany(Journal::class, 'category_id', 'category_id');
+		return $this->hasMany(Transaction::class, 'category_id', 'category_id');
 	}
 
 	// ----------------- Others
@@ -64,8 +64,8 @@ class Category extends Model
 		$success = (empty($this->parent_id) && !$this->children()->exists());
 		$success |= (!empty($this->parent_id));
 
-		// Check if category has created journal
-		$success &= (!$this->journal()->exists());
+		// Check if category has created transaction
+		$success &= (!$this->transaction()->exists());
 
 		return $success;
 	}

@@ -38,9 +38,9 @@ class Account extends Model
 		return $this->belongsTo(AccountGroup::class, 'group_id', 'group_id');
 	}
 
-	public function journal()
+	public function transaction()
 	{
-		return $this->hasMany(Journal::class, 'account_id', 'account_id');
+		return $this->hasMany(Transaction::class, 'account_id', 'account_id');
 	}
 
 	// ----------------- Others
@@ -52,6 +52,6 @@ class Account extends Model
 
 	public function isDeletable()
 	{
-		return (!$this->journal()->exists());
+		return (!$this->transaction()->exists());
 	}
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJournalTransfersTable extends Migration
+class CreateTransactionTransfersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateJournalTransfersTable extends Migration
      */
     public function up()
     {
-        Schema::create('journal_transfer', function (Blueprint $table) {
+        Schema::create('transaction_transfer', function (Blueprint $table) {
             $table->unsignedInteger('transfer_id')->autoIncrement();
-            $table->unsignedInteger('journal_id');
+            $table->unsignedInteger('trans_id');
             $table->unsignedInteger('account_destination');
             $table->double('admin_fee');
 
-            $table->foreign('journal_id')->references('journal_id')->on('journal')->onDelete('cascade');
+            $table->foreign('trans_id')->references('trans_id')->on('transaction')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ class CreateJournalTransfersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('journal_transfers');
+        Schema::dropIfExists('transaction_transfers');
     }
 }
