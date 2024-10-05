@@ -76,5 +76,7 @@
 {{-- <script src="{{ asset('adminlte/plugins/summernote/summernote-bs4.min.js') }}"></script> --}}
 {{-- <script src="{{ asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script> --}}
 <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
+<script src="{{ asset('js/general-helper.js') }}"></script>
+@yield('scripts')
 </body>
 </html>
