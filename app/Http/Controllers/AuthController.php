@@ -50,7 +50,6 @@ class AuthController extends Controller
 		]);
 	}
 
-
 	public function store(Request $request)
 	{
 		if ($request->password != $request->repassword) {
@@ -64,7 +63,7 @@ class AuthController extends Controller
 			'password' => ['required'],
 		]);
 		$validated['password'] = Hash::make($request->password);
-		$validated['role_id'] = User::ROLE_ADMIN;
+		$validated['role_id'] = User::ROLE_EDITOR;
 		if (!User::create($validated)) {
 			$request->session()->flash('error', 'Failed register.');
 			return redirect('register');
