@@ -35,7 +35,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/change-password', [SiteController::class, 'changePassword'])->name('password.change');
     Route::post('/change-password', [SiteController::class, 'updatePassword'])->name('password.update');
 
-    // Route::resource('period', PeriodController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('account-group', AccountGroupController::class);
     Route::resource('account', AccountController::class);
