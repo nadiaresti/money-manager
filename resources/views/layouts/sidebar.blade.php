@@ -28,10 +28,18 @@
   </div>
 
   <!-- Sidebar Menu -->
+  @php
+    function isParentActive(array $routes) {
+      foreach ($routes as $route) {
+        if (request()->routeIs($route)) return true;
+      }
+      return false;
+    }
+  @endphp
   <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-      <li class="nav-item menu-open">
-        <a href="#" class="nav-link active">
+      <li class="nav-item {{ isParentActive(['category.*', 'account-group.*', 'account.*', 'user.*']) ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ isParentActive(['category.*', 'account-group.*', 'account.*', 'user.*']) ? 'active' : '' }}">
           <i class="nav-icon fas fa-tachometer-alt"></i>
           <p>
             Master
@@ -45,12 +53,6 @@
               <p>Category</p>
             </a>
           </li>
-          {{-- <li class="nav-item">
-            <a href="{{ route('period.index') }}" class="nav-link {{ Request::routeIs('period.*') ? 'active' : '' }}">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Period</p>
-            </a>
-          </li> --}}
           <li class="nav-item">
             <a href="{{ route('account-group.index') }}" class="nav-link {{ Request::routeIs('account-group.*') ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
@@ -64,7 +66,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{ route('account.index') }}" class="nav-link {{ Request::routeIs('account.*') ? 'active' : '' }}">
+            <a href="{{ route('account.index') }}" class="nav-link {{ Request::routeIs('user.*') ? 'active' : '' }}">
               <i class="far fa-circle nav-icon"></i>
               <p>User</p>
             </a>
@@ -72,7 +74,7 @@
         </ul>
       </li>
       <li class="nav-item">
-        <a href="pages/widgets.html" class="nav-link">
+        <a href="{{ route('transaction.index') }}" class="nav-link {{ Request::routeIs('transaction.*') ? 'active' : '' }}">
           <i class="fas fa-money-check-alt"></i>
           <p>
             Transaction
