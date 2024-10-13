@@ -5,6 +5,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\AccountGroupController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,5 +39,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('category', CategoryController::class);
     Route::resource('account-group', AccountGroupController::class);
     Route::resource('account', AccountController::class);
+
+    Route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index');
+    Route::get('transaction/create', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::post('transaction/create', [TransactionController::class, 'create'])->name('transaction.store');
+    Route::get('transaction/show/{transaction}', [TransactionController::class, 'show'])->name('transaction.show');
+    Route::post('transaction/destroy', [TransactionController::class, 'edit'])->name('transaction.destroy');
 });
 
