@@ -70,6 +70,15 @@ class Category extends Model
 		return $success;
 	}
 
+	public static function getList()
+	{
+		$result = [];
+		foreach (Category::all() as $item) {
+			$result[$item->category_id] = $item->category_name;
+		}
+		return $result;
+	}
+
 	public static function listType()
 	{
 		return [

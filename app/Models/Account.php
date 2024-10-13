@@ -54,4 +54,13 @@ class Account extends Model
 	{
 		return (!$this->transaction()->exists());
 	}
+
+	public static function getList()
+	{
+		$result = [];
+		foreach (Account::all() as $item) {
+			$result[$item->account_id] = $item->account_name;
+		}
+		return $result;
+	}
 }
