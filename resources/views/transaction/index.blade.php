@@ -43,8 +43,8 @@ $breadcrumbs = [
 									<td class="text-center">
 										<a href="{{ route('transaction.show', $item->trans_id) }}" class="btn btn-info btn-xs mr-1">
 											<i class="fa fa-eye"></i> View</a>
-										{{-- <a href="{{ route('transaction.edit', $item->trans_id) }}" class="btn btn-warning btn-xs mr-1">
-											<i class="fa fa-pen"></i> Edit</a> --}}
+										<a href="{{ route('transaction.edit', $item->trans_id) }}" class="btn btn-warning btn-xs mr-1">
+											<i class="fa fa-pen"></i> Edit</a>
 										<form action="{{ route('transaction.destroy', $item->trans_id) }}" method="POST" style="display:inline;">
 											@csrf
 											@method('DELETE')

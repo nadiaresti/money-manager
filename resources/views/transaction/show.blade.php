@@ -53,7 +53,7 @@ $breadcrumbs = [
 								@endif
 								<tr>
 									<td>Remark</td>
-									<td>{{ nl2br($transaction->trans_remark) }}</td>
+									<td>{!! nl2br($transaction->trans_remark) !!}</td>
 								</tr>
 								<tr>
 									<td>Last Update</td>
@@ -67,21 +67,27 @@ $breadcrumbs = [
 						<?php $file_name = (!empty($transaction->file)) ? $transaction->file->file_name : ''; ?>
 						@if (empty($transaction->file))
 							<div class="col-sm-10 border d-flex align-items-center justify-content-center" style="max-width: 400px; min-height: 200px" id="preview">
-								<i class="text-secondary">File Not Found</i>
+								<i class="text-secondary">No preview</i>
 							</div>
 						@elseif ($transaction->file->file_type == 'image')
 							<img src="{{ asset("storage/uploads/$file_name") }}" style="width: 400px;">
 						@else
-							<div class="iframe-container" style="position: relative; width: 80%; height: 400px;">
+							<div class="iframe-container" style="position: relative; width: 80%; height: 300px;">
 								<iframe src="{{ asset("storage/uploads/$file_name") }}" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+								{{-- <button class="btn btn-primary btn-mini position-absolute" id="show-file" style="left: 10%; top: 10%; transform: translate(-50%, -50%);">
+									<i class="fa fa-eye"></i>
+								</button> --}}
 							</div>
 						@endif
 					</div>
 					<br>
 
-					{{-- <a class="btn btn-sm btn-warning" href="{{ route('transaction.edit', $transaction->trans_id) }}">
+					<a class="btn btn-sm btn-warning" href="{{ route('transaction.edit', $transaction->trans_id) }}">
 						<i class="fa fa-pen"></i> Edit
-					</a> --}}
+					</a> &nbsp;
+					<a class="btn btn-sm btn-danger" href="{{ route('transaction.destroy', $transaction->trans_id) }}">
+						<i class="fa fa-trash"></i> Delete
+					</a>
 				</div>
 			</div>
 		</div>
