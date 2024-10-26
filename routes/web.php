@@ -31,7 +31,7 @@ Route::group(['middleware' => ['guest']], function() {
 });
 
 Route::group(['middleware' => ['auth']], function() {
-    Route::get('/', [SiteController::class, 'index']);
+    Route::get('/', [SiteController::class, 'index'])->name('/');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/change-password', [SiteController::class, 'changePassword'])->name('password.change');
     Route::post('/change-password', [SiteController::class, 'updatePassword'])->name('password.update');
