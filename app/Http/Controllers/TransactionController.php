@@ -12,9 +12,22 @@ use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Transaction::orderBy('trans_date', 'desc')->paginate(config('custom.pagination'));
+        $where = [];
+        if (!empty($request->start_date)) {
+            $where[] = ['trans_date', '>=', date('Y-m-d', strtotime($request->start_date))];
+        }
+        if (!empty($request->end_date)) {
+            $where[] = ['trans_date', '<=', date('Y-m-d', strtotime($request->end_date))];
+        }
+        if (!empty($request->trans_type)) {
+            $where[] = ['trans_type', '=', $request->trans_type];
+        }
+        if (!empty($request->category_id)) {
+            $where[] = ['category_id', '=', $request->category_id];
+        }
+        $data = Transaction::where($where)->orderBy('trans_date', 'desc')->paginate(config('custom.pagination'));
         return view('transaction.index', compact('data'));
     }
 
