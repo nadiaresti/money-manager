@@ -16,8 +16,8 @@ class CreateTransactionTransfersTable extends Migration
         Schema::create('transaction_transfer', function (Blueprint $table) {
             $table->unsignedInteger('transfer_id')->autoIncrement();
             $table->unsignedInteger('trans_id');
-            $table->unsignedInteger('account_destination');
-            $table->double('admin_fee');
+            $table->unsignedInteger('destination_id');
+            $table->decimal('admin_fee', 10, 2);
 
             $table->foreign('trans_id')->references('trans_id')->on('transaction')->onDelete('cascade');
         });

@@ -40,6 +40,11 @@ class ConfigSeeder extends Seeder
                 'config_key' => 'decimal',
                 'config_value' => '2',
             ],
+            [
+                'config_name' => 'Report Type',
+                'config_key' => 'report_type',
+                'config_value' => 'Y-m',
+            ],
         ];
 
         DB::table('config')->insert($data);

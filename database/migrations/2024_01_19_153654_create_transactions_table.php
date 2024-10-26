@@ -17,10 +17,9 @@ class CreateTransactionsTable extends Migration
             $table->unsignedInteger('trans_id')->autoIncrement();
             $table->unsignedInteger('category_id');
             $table->unsignedInteger('account_id');
-            $table->string('period_name', 6);
             $table->date('trans_date');
             $table->tinyInteger('trans_type');
-            $table->double('trans_amount', 15, 2);
+            $table->decimal('trans_amount', 15, 2);
             $table->string('trans_remark', 250)->nullable();
             $table->unsignedInteger('updated_by');
             $table->dateTime('updated_at');

@@ -22,6 +22,8 @@ class UserSeeder extends Seeder
             'email' => 'superuser@xxx.xx',
             'password' => Hash::make('superuser'),
             'role' => User::ROLE_SUPERUSER,
+            'updated_by' => 1,
+            'updated_at' => now(),
         ]);
     }
 }

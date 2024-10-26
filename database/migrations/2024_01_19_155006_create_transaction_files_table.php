@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTransactionAttachmentsTable extends Migration
+class CreateTransactionFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateTransactionAttachmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('transaction_attachment', function (Blueprint $table) {
-            $table->unsignedInteger('attachment_id')->autoIncrement();
+        Schema::create('transaction_file', function (Blueprint $table) {
+            $table->unsignedInteger('file_id')->autoIncrement();
             $table->unsignedInteger('trans_id');
-            $table->string('attachment_name', 250);
+            $table->string('file_name', 250);
+            $table->string('file_type', 50);
 
             $table->foreign('trans_id')->references('trans_id')->on('transaction')->onDelete('cascade');
         });
