@@ -68,4 +68,13 @@ class AccountGroupController extends Controller
 			->with('success', 'Success update Account Group!');
 	}
 
+	public function destroy(AccountGroup $accountGroup)
+	{
+		if (!$accountGroup->isDeletable()) {
+			return redirect()->back()->with('error', 'Account Group can not be deleted');
+		}
+
+		$accountGroup->delete();
+		return redirect()->route('account-group.index')->with('success', 'Account Group deleted');
+	}
 }
