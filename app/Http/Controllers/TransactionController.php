@@ -138,4 +138,10 @@ class TransactionController extends Controller
         }
         return view('transaction.form-edit', compact('transaction'));
     }
+
+    public function destroy(Transaction $transaction)
+    {
+        $transaction->delete();
+        return redirect()->back()->with('success', 'Success! Transaction deleted.');
+    }
 }

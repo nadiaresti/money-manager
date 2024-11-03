@@ -46,6 +46,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('transaction/show/{transaction}', [TransactionController::class, 'show'])->name('transaction.show');
     Route::get('transaction/edit/{transaction}', [TransactionController::class, 'edit'])->name('transaction.edit');
     Route::post('transaction/update/{transaction}', [TransactionController::class, 'edit'])->name('transaction.update');
-    Route::post('transaction/destroy', [TransactionController::class, 'destroy'])->name('transaction.destroy');
+    Route::delete('transaction/destroy/{transaction}', [TransactionController::class, 'destroy'])->name('transaction.destroy');
 });
 
