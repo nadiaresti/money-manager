@@ -32,20 +32,17 @@ $breadcrumbs = [
 									<td>{{ $item->group_code }}</td>
 									<td>{{ $item->group_name }}</td>
 									<td class="text-center">
-										<a href="{{ route('account-group.show', $item->group_id) }}" class="btn btn-info btn-xs mr-1">
+										<a href="{{ route('account-group.show', $item->group_id) }}" class="btn btn-outline-primary btn-xs mr-1">
 											<i class="fa fa-eye"></i> View</a>
-										<a href="{{ route('account-group.edit', $item->group_id) }}" class="btn btn-warning btn-xs mr-1">
+										<a href="{{ route('account-group.edit', $item->group_id) }}" class="btn btn-outline-primary btn-xs mr-1">
 											<i class="fa fa-pen"></i> Edit</a>
-										<?php $visibility = ($item->isDeletable()) ? 'visible' : 'hidden'; ?>
-										{{-- @if($item->isDeletable()) --}}
-											<form action="{{ route('account-group.destroy', $item->group_id) }}" method="POST" class="d-inline" style="visibility: {{ $visibility }};">
-												@csrf
-												@method('DELETE')
-												<button type="submit" onclick="return confirm('Are you sure you want to delete this account group?')" class="btn btn-danger btn-xs">
-													<i class="fa fa-trash"></i> Delete
-												</button>
-											</form>
-										{{-- @endif --}}
+										<form action="{{ route('account-group.destroy', $item->group_id) }}" method="POST" class="d-inline">
+											@csrf
+											@method('DELETE')
+											<button type="submit" onclick="return confirm('Are you sure you want to delete this account group?')" class="btn btn-outline-primary btn-xs">
+												<i class="fa fa-trash"></i> Delete
+											</button>
+										</form>
 									</td>
 								</tr>
 							@endforeach

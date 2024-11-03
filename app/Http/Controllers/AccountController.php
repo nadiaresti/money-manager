@@ -7,9 +7,13 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-	public function index()
+	public function index(Request $request)
 	{
-		$data = Account::orderBy('updated_at', 'desc')->paginate(config('custom.pagination'));
+		$where = [];
+		if (!empty($request->group_id)) {
+			$where[] = ['group_id', '=', $request->group_id];
+		}
+		$data = Account::where($where)->orderBy('updated_at', 'desc')->paginate(config('custom.pagination'));
 		return view('account.index', [
 			'data' => $data,
 		]);

@@ -7,9 +7,13 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-	public function index()
+	public function index(Request $request)
 	{
-		$category = Category::orderBy('updated_at', 'desc')->paginate(config('custom.pagination'));
+		$where = [];
+		if (!empty($request->category_type)) {
+			$where[] = ['category_type', '=', $request->category_type];
+		}
+		$category = Category::where($where)->orderBy('category_type', 'desc')->paginate(config('custom.pagination'));
 		return view('category.index', compact('category'));
 	}
 

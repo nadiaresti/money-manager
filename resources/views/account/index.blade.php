@@ -1,4 +1,6 @@
 <?php
+use App\Models\AccountGroup;
+
 $title = 'List Account';
 $breadcrumbs = [
 	['label' => 'Home', 'url' => url('/')],
@@ -16,6 +18,22 @@ $breadcrumbs = [
 					<a class="btn btn-primary btn-sm mb-3" href="{{ route('account.create') }}">
 						<i class="fa fa-plus"></i> Create Account
 					</a>
+
+					{{-- Filter Form --}}
+					<form method="GET" action="{{ route('account.index') }}">
+						<div class="row col-12 mb-3">
+							<select name="group_id" class="form-control form-control-sm col-2 mr-2">
+								<option value="">All Group</option>
+								@foreach (AccountGroup::getList() as $key => $each)
+									<option value="{{ $key }}" {{ request('group_id') == $key ? 'selected' : '' }}>{{ $each }}</option>
+								@endforeach
+							</select>
+							<button type="submit" class="btn btn-outline-primary btn-sm">Search</button>
+						</div>
+					</form>
+					{{-- End of Filter --}}
+
+					{{-- Data List --}}
 					<table id="example2" class="table table-bordered table-hover" width="100%">
 						<thead>
 							<tr>
@@ -34,19 +52,17 @@ $breadcrumbs = [
 									<td>{{ $item->AccountGroup->group_name }}</td>
 									<td>{{ $item->account_description }}</td>
 									<td class="text-center">
-										<a href="{{ route('account.show', $item->account_id) }}" class="btn btn-info btn-xs mr-1">
+										<a href="{{ route('account.show', $item->account_id) }}" class="btn btn-outline-primary btn-xs mr-1">
 											<i class="fa fa-eye"></i> View</a>
-										<a href="{{ route('account.edit', $item->account_id) }}" class="btn btn-warning btn-xs mr-1">
+										<a href="{{ route('account.edit', $item->account_id) }}" class="btn btn-outline-primary btn-xs mr-1">
 											<i class="fa fa-pen"></i> Edit</a>
-										@if($item->isDeletable())
-											<form action="{{ route('account.destroy', $item->account_id) }}" method="POST" style="display:inline;">
-												@csrf
-												@method('DELETE')
-												<button type="submit" onclick="return confirm('Are you sure you want to delete this account?')" class="btn btn-danger btn-xs">
-													<i class="fa fa-trash"></i> Delete
-												</button>
-											</form>
-										@endif
+										<form action="{{ route('account.destroy', $item->account_id) }}" method="POST" style="display:inline;">
+											@csrf
+											@method('DELETE')
+											<button type="submit" onclick="return confirm('Are you sure you want to delete this account?')" class="btn btn-outline-primary btn-xs">
+												<i class="fa fa-trash"></i> Delete
+											</button>
+										</form>
 									</td>
 								</tr>
 							@endforeach
