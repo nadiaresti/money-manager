@@ -1,5 +1,5 @@
 <?php
-use App\models\Category;
+use App\Models\Category;
 
 $title = isset($category) ? "Update: $category->category_name" : 'Create Category';
 $breadcrumbs = [

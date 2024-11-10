@@ -1,5 +1,5 @@
 <?php
-use App\models\Category;
+use App\Models\Category;
 
 $title = $category->category_name;
 $breadcrumbs = [

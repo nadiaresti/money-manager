@@ -1,6 +1,6 @@
 <?php
-use App\models\Transaction;
-use App\models\Category;
+use App\Models\Transaction;
+use App\Models\Category;
 use App\Helpers\GeneralHelper;
 
 $title = 'List Transaction';

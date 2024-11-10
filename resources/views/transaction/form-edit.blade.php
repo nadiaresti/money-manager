@@ -1,7 +1,7 @@
 <?php
-use App\models\Account;
-use App\models\Category;
-use App\models\Transaction;
+use App\Models\Account;
+use App\Models\Category;
+use App\Models\Transaction;
 
 $title = isset($transaction) ? "Update: " . Transaction::listType()[$transaction->trans_type] : 'Create Transaction';
 $breadcrumbs = [

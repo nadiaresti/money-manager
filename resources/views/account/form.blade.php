@@ -1,5 +1,5 @@
 <?php
-use App\models\AccountGroup;
+use App\Models\AccountGroup;
 
 $title = isset($account) ? "Update: $account->account_name" : 'Create Account';
 $breadcrumbs = [
