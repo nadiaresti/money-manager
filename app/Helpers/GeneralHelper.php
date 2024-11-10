@@ -110,4 +110,9 @@ class GeneralHelper
 		}
 		return $str;
     }
+
+    public static function assertNumber($value)
+    {
+        return (double) str_replace(',', '', $value);
+    }
 }
