@@ -8,16 +8,15 @@
   <!-- Google Font: Source Sans Pro -->
   {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> --}}
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
-  {{-- <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> --}}
-  {{-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}"> --}}
-  {{-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}"> --}}
-  {{-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}"> --}}
-  {{-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/jqvmap/jqvmap.min.css') }}"> --}}
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
-  {{-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}"> --}}
-  {{-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/daterangepicker/daterangepicker.css') }}"> --}}
-  {{-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/summernote/summernote-bs4.min.css') }}"> --}}
+  <link rel="stylesheet" href="{{ asset('adminlte/plugins/toastr/toastr.min.css') }}">
 </head>
+<style>
+  .toast {
+    margin-top: 10px; /* Adjust top margin */
+    margin-right: 10px; /* Adjust right margin */
+  }
+</style>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -34,15 +33,6 @@
     </div>
 
     <section class="content">
-      @if (session()->has('success'))
-        <div class="alert alert-success" role="alert">
-            {!! session()->get('success') !!}
-        </div>
-      @elseif (session()->has('error'))
-        <div class="alert alert-danger" role="alert">
-            {!! session()->get('error') !!}
-        </div>
-      @endif
       @yield('content')
     </section>
   </div>
@@ -58,6 +48,7 @@
   </aside>
 </div>
 
+<script src="{{ asset('js/moment.min.js') }}"></script>
 <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('adminlte/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
@@ -65,18 +56,28 @@
   $.widget.bridge('uibutton', $.ui.button)
 </script> --}}
 <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-{{-- <script src="{{ asset('adminlte/plugins/chart.js/Chart.min.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/sparklines/sparkline.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/jqvmap/jquery.vmap.min.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/jquery-knob/jquery.knob.min.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/moment/moment.min.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/summernote/summernote-bs4.min.js') }}"></script> --}}
-{{-- <script src="{{ asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script> --}}
+<script src="{{ asset('adminlte/plugins/chart.js/Chart.min.js') }}"></script>
+<script src="{{ asset('adminlte/plugins/toastr/toastr.min.js') }}"></script>
 <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
 <script src="{{ asset('js/general-helper.js') }}"></script>
+
+<script>
+  $(document).ready(function() {
+    @if (session()->has('success'))
+      toastr.success(`{!! session()->get('success') !!}`, 'Success');
+    @elseif (session()->has('error'))
+      $(document).Toasts('create', {
+        class: 'bg-danger',
+        icon: 'fas fa-exclamation-circle',
+        title: 'Failed!',
+        body: `{!! session()->get('error') !!}`,
+        autohide: true,
+        delay: 5000,
+      })
+    @endif
+  })
+</script>
+
 @yield('scripts')
 </body>
 </html>
