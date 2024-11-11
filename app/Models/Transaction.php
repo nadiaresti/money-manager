@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Helpers\GeneralHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -66,6 +68,47 @@ class Transaction extends Model
 	}
 
 	// ----------------- Others
+	public static function calculateTotal($trans_type)
+	{
+		$report_type = Config::getConfig()['report_type'];
+		$data = self::where('trans_type', $trans_type)
+			->where('trans_date', 'like', date($report_type) . '%');
+		return $data->sum('trans_amount');
+	}
+
+	public static function fetchTotalbyPeriod($trans_type, $interval)
+	{
+		$report_type = Config::getConfig()['report_type'];
+		$periods = GeneralHelper::getPeriods($interval);
+		$format_date = ($report_type == 'Y') ? '%Y' : '%Y-%m';
+		$data = self::where('trans_type', $trans_type)
+			->whereIn(DB::raw("DATE_FORMAT(trans_date, '$format_date')"), $periods)
+			->selectRaw("DATE_FORMAT(trans_date, '$format_date') as periods, SUM(trans_amount) as trans_amount")
+			->groupBy('periods')
+			->orderBy('periods', 'DESC')
+			->get();
+		$result = [];
+		foreach ($data as $each) {
+			$result[$each->periods] = $each->trans_amount;
+		}
+		return $result;
+	}
+
+	public static function fetchTotalbyCategory($trans_type)
+	{
+		$report_type = Config::getConfig()['report_type'];
+		$periods = date($report_type);
+		$format_date = ($report_type == 'Y') ? '%Y' : '%Y-%m';
+		$data = self::join('category', 'transaction.category_id', '=', 'category.category_id')
+			->where('trans_type', $trans_type)
+			->where(DB::raw("DATE_FORMAT(trans_date, '$format_date')"), $periods)
+			->select('transaction.category_id', 'category_name', DB::raw('SUM(trans_amount) as trans_amount'))
+			->groupBy('transaction.category_id', 'category_name')
+			->get();
+		// dd($data->toSql(), $data->getBindings());
+		return $data;
+	}
+
 	public function lastUpdate()
 	{
 		$user = User::find($this->updated_by);
