@@ -53,7 +53,7 @@ class Transaction extends Model
 			'account_id' => ['required', 'int', 'max:10'],
 			'trans_date' => ['required', 'date_format:Y-m-d'],
 			'trans_type' => ['required', 'int'],
-			'trans_amount' => ['required'],
+			'trans_amount' => ['required', 'gt:0'],
 			'trans_remark' => ['nullable', 'string', 'max:250'],
 			'updated_by' => ['required', 'int', 'max:10'],
 			'updated_at' => ['required', 'date_format:Y-m-d H:i:s'],
