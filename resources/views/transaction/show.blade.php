@@ -27,10 +27,12 @@ $breadcrumbs = [
 									<td>Date</td>
 									<td>{{ GeneralHelper::formatDate($transaction->trans_date) }}</td>
 								</tr>
+								@if (!empty($transaction->category))
 								<tr>
 									<td>Category</td>
 									<td>{{ $transaction->category->category_name }}</td>
 								</tr>
+								@endif
 								<tr>
 									<td>Account</td>
 									<td>{{ $transaction->account->account_name }}</td>
@@ -38,7 +40,7 @@ $breadcrumbs = [
 								@if (!empty($transaction->transfer))
 								<tr>
 									<td>Destination Account</td>
-									<td>{{ $transaction->trasfer->account->account_name }}</td>
+									<td>{{ $transaction->transfer->account->account_name ?? '' }}</td>
 								</tr>
 								@endif
 								<tr>

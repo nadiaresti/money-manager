@@ -50,7 +50,7 @@ $breadcrumbs = [
 								<thead>
 									<tr>
 										<th width="5%">No</th>
-										<th width="10%">Date</th>
+										<th width="15%">Date</th>
 										<th width="10%">Type</th>
 										<th width="15%">Category</th>
 										<th width="20%">Account</th>
@@ -63,9 +63,17 @@ $breadcrumbs = [
 										<tr>
 											<td>{{ $key + 1 }}</td>
 											<td>{{ GeneralHelper::formatDate($item->trans_date) }}</td>
-											<td>{{ Transaction::listType()[$item->trans_type] }}</td>
-											<td>{{ $item->category->category_name }}</td>
-											<td>{{ $item->account->account_name }}</td>
+											<td class="text-center">
+												<?php
+												if ($item->trans_type == Transaction::TYPE_INCOME) $bg_badge = 'bg-success';
+												else if ($item->trans_type == Transaction::TYPE_EXPENSE) $bg_badge = 'bg-danger';
+												else $bg_badge = 'bg-secondary'; ?>
+												<span class="badge  {{ $bg_badge }}">{{ Transaction::listType()[$item->trans_type] }}</span>
+											</td>
+											<td>{{ $item->category->category_name ?? '-' }}</td>
+											<td>
+												<?php $destination = ($item->trans_type == Transaction::TYPE_TRANSFER) ? ' -> ' . $item->transfer->account->account_name : ''; ?>
+												{{ $item->account->account_name . $destination }}</td>
 											<td>{{ GeneralHelper::formatMoney($item->trans_amount) }}</td>
 											<td class="text-center">
 												<a href="{{ route('transaction.show', $item->trans_id) }}" class="btn btn-outline-primary btn-xs mr-1">
