@@ -31,6 +31,8 @@ $breadcrumbs = [
 
 			<form method="POST" action="{{ route('transaction.update', $transaction->trans_id) }}" class="form-horizontal" enctype="multipart/form-data">
 				@csrf
+				<input type="hidden" name="transfer_id" value="{{ $transaction->transfer_id ?? '' }}">
+
 				<div class="form-group row">
 					<label class="col-sm-2">Type</label>
 					<div class="btn-group btn-group-toggle col-sm-3" data-toggle="buttons">
@@ -51,7 +53,7 @@ $breadcrumbs = [
 								<input type="date" name="trans_date" class="form-control col-sm-6" value="{{ $transaction->trans_date ?? old('trans_date', now()->format('Y-m-d')) }}" required>
 							</div>
 						</div>
-						<div class="form-group row">
+						<div class="form-group row" id="category">
 							<label class="col-sm-4">Category</label>
 							<div class="col-sm-8">
 								<select class="form-control col-sm-6" name="category_id">
@@ -162,8 +164,10 @@ $breadcrumbs = [
 	$('input[name="trans_type"]').change(function() {
 		if ($(this).val() == type_transfer) {
 			$('.type-transfer').show();
+			$('#category').hide();
 		} else {
 			$('.type-transfer').hide();
+			$('#category').show();
 		}
 	})
 

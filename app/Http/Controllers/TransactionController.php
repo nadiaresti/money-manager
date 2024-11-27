@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\GeneralHelper;
 use Exception;
 use App\Models\Transaction;
 use App\Models\TransactionFile;
+use App\Models\Config;
+use App\Models\TransactionTransfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -27,7 +30,7 @@ class TransactionController extends Controller
         if (!empty($request->category_id)) {
             $where[] = ['category_id', '=', $request->category_id];
         }
-        $data = Transaction::where($where)->orderBy('trans_date', 'desc')->paginate(config('custom.pagination'));
+        $data = Transaction::where($where)->orderByRaw('trans_date desc, updated_at desc')->paginate(config('custom.pagination'));
         return view('transaction.index', compact('data'));
     }
 
@@ -37,12 +40,26 @@ class TransactionController extends Controller
             DB::beginTransaction();
             try {
                 // Store data into DB
-                $post = $request->except(['file']);
-                $post['trans_amount'] = 1000;
+                $post = $request->except(['file', 'destination_id', 'admin_fee']);
+                $post['trans_amount'] = GeneralHelper::assertNumber($request->trans_amount);
                 $post['updated_by'] = session()->get('user')['user_id'];
                 $post['updated_at'] = date('Y-m-d H:i:s');
                 Transaction::validate($post);
                 $transaction = Transaction::create($post);
+
+                if ($request->trans_type == Transaction::TYPE_TRANSFER) {
+                    // Store data into transfer table
+                    $transfer = new TransactionTransfer();
+                    $transfer->trans_id = $transaction->trans_id;
+                    $transfer->destination_id = $request->destination_id;
+                    $transfer->admin_fee = GeneralHelper::assertNumber($request->admin_fee);
+                    $transfer->save();
+
+                    // Store fee as expense transaction
+                    if ($transfer->admin_fee > 0) {
+                        $transaction->postFee();
+                    }
+                }
 
                 // Store file
                 if (($request->hasFile('file'))) {
@@ -69,14 +86,15 @@ class TransactionController extends Controller
             } catch (ValidationException $e) {
                 DB::rollback();
                 return redirect()->back()
-                    ->withErrors($e->validator)
+                    ->with('error', implode('<br>', $e->validator->errors()->all()))
                     ->withInput();
             } catch (Exception $e) {
                 DB::rollback();
                 return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
             }
         }
-        return view('transaction.form');
+        $config = Config::getConfig();
+        return view('transaction.form', compact('config'));
     }
 
     public function show(Transaction $transaction)
@@ -91,10 +109,44 @@ class TransactionController extends Controller
             try {
                 // Store data into DB
                 $post = $request->except(['old_file', 'file', 'destination_id', 'admin_fee']);
+                $post['trans_amount'] = GeneralHelper::assertNumber($request->trans_amount);
                 $post['updated_by'] = session()->get('user')['user_id'];
                 $post['updated_at'] = date('Y-m-d H:i:s');
                 Transaction::validate($post);
                 $transaction->update($post);
+
+                // Store data into transfer table
+                if ($request->trans_type == Transaction::TYPE_TRANSFER && (!empty($transaction->transfer))) {
+                    // Update if old data is transfer
+                    $transfer = $transaction->transfer;
+                    $transfer->destination_id = $request->destination_id;
+                    $transfer->admin_fee = GeneralHelper::assertNumber($request->admin_fee);
+                    $transfer->update();
+                    // Update fee transaction
+                    if (isset($transfer->fee) && ($transfer->admin_fee <= 0)) {
+                        $transfer->fee->delete();
+                    } else {
+                        $transaction->postFee();
+                    }
+                } else if ($request->trans_type == Transaction::TYPE_TRANSFER) {
+                    // Store if old data is not transfer
+                    $transfer = new TransactionTransfer();
+                    $transfer->trans_id = $transaction->trans_id;
+                    $transfer->destination_id = $request->destination_id;
+                    $transfer->admin_fee = GeneralHelper::assertNumber($request->admin_fee);
+                    $transfer->save();
+                    // Store fee transaction
+                    if ($transfer->admin_fee > 0) {
+                        $transaction->postFee();
+                    }
+                }
+
+                // If fee transfer, update data transfer
+                if ($transaction->transfer_id) {
+                    $fee_transfer = $transaction->fee;
+                    $fee_transfer->admin_fee = $transaction->trans_amount;
+                    $fee_transfer->update();
+                }
 
                 // If old file is deleted, remove from storage and DB
                 if (!empty($transaction->file) && empty($request->old_file)) {
@@ -124,11 +176,12 @@ class TransactionController extends Controller
                 }
 
                 DB::commit();
-                return redirect()->route('transaction.show', $transaction);
+                return redirect()->route('transaction.show', $transaction)
+                    ->with('success', 'Transaction updated.');
             } catch (ValidationException $e) {
                 DB::rollback();
                 return redirect()->back()
-                    ->withErrors($e->validator)
+                    ->with('error', implode('<br>', $e->validator->errors()->all()))
                     ->withInput();
 
             } catch (Exception $e) {

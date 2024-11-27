@@ -15,7 +15,8 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transaction', function (Blueprint $table) {
             $table->unsignedInteger('trans_id')->autoIncrement();
-            $table->unsignedInteger('category_id');
+            $table->unsignedInteger('transfer_id')->nullable();
+            $table->unsignedInteger('category_id')->nullable();
             $table->unsignedInteger('account_id');
             $table->date('trans_date');
             $table->tinyInteger('trans_type');

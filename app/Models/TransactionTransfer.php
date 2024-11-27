@@ -28,6 +28,11 @@ class TransactionTransfer extends Model
 		return $this->belongsTo(Account::class, 'destination_id', 'account_id');
 	}
 
+	public function fee()
+	{
+		return $this->hasOne(Transaction::class, 'transfer_id', 'transfer_id');
+	}
+
 	// ----------------- Validation
 	public static function validate($data)
 	{

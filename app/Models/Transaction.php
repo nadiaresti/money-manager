@@ -22,11 +22,16 @@ class Transaction extends Model
 	const TYPE_TRANSFER = 3;
 
 	protected $fillable = [
-		'category_id', 'account_id', 'trans_date', 'trans_type', 'trans_amount', 'trans_remark',
+		'transfer_id', 'category_id', 'account_id', 'trans_date', 'trans_type', 'trans_amount', 'trans_remark',
 		'updated_by', 'updated_at',
 	];
 
 	// ----------------- Relation
+	public function fee()
+	{
+		return $this->belongsTo(TransactionTransfer::class, 'transfer_id', 'transfer_id');
+	}
+
 	public function account()
 	{
 		return $this->belongsTo(Account::class, 'account_id', 'account_id');
@@ -51,7 +56,7 @@ class Transaction extends Model
 	public static function validate($data)
 	{
 		$rules = [
-			'category_id' => ['required', 'int', 'max:10'],
+			'transfer_id' => ['int', 'max:10', 'nullable'],
 			'account_id' => ['required', 'int', 'max:10'],
 			'trans_date' => ['required', 'date_format:Y-m-d'],
 			'trans_type' => ['required', 'int'],
@@ -60,6 +65,10 @@ class Transaction extends Model
 			'updated_by' => ['required', 'int', 'max:10'],
 			'updated_at' => ['required', 'date_format:Y-m-d H:i:s'],
 		];
+		// When trans type is TRANSFER, category is required
+		if (isset($data['trans_type']) && ($data['trans_type'] != self::TYPE_TRANSFER && empty($data['transfer_id']))) {
+			$rules['category_id'] = ['required', 'int', 'max:10'];
+		}
 
 		$validator = Validator::make($data, $rules);
 		if ($validator->fails()) {
@@ -107,6 +116,29 @@ class Transaction extends Model
 			->get();
 		// dd($data->toSql(), $data->getBindings());
 		return $data;
+	}
+
+	public function postFee()
+	{
+		$data = [];
+		$data['category_id'] = (!isset($this->transfer->fee) || !isset($this->category_id)) ? 0 : $this->category_id;
+		$data['account_id'] = $this->account_id;
+		$data['trans_date'] = $this->trans_date;
+		$data['trans_type'] = self::TYPE_EXPENSE;
+		$data['trans_amount'] = $this->transfer->admin_fee;
+		$data['trans_remark'] = "Fee of transfer transaction";
+		$data['updated_by'] = session()->get('user')['user_id'];
+		$data['updated_at'] = date('Y-m-d H:i:s');
+
+		if (!isset($this->transfer->fee)) {
+			$data['transfer_id'] = $this->transfer->transfer_id;
+			self::validate($data);
+			return self::create($data);
+		} else {
+			self::validate($data);
+			$fee = $this->transfer->fee;
+			return $fee->update($data);
+		}
 	}
 
 	public function lastUpdate()
