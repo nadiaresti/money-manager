@@ -147,6 +147,9 @@ $breadcrumbs = [
 @section('scripts')
 <script>
 	var type_transfer = '<?= Transaction::TYPE_TRANSFER ?>';
+	$(document).ready(formCategory($('input[name="trans_type"]:checked')))
+	$('input[name="trans_type"]').change(function() { formCategory($(this)) })
+
 	$('#choose-file').change(function(e){
 		$('#preview').html('');
 		var file = e.target.files[0];
@@ -161,21 +164,21 @@ $breadcrumbs = [
 		reader.readAsDataURL(file);
 	})
 
-	$('input[name="trans_type"]').change(function() {
-		if ($(this).val() == type_transfer) {
+	$(document).on('click', '#remove-file', function() {
+		$('#preview').html('');
+		$('#choose-file').val('');
+		$('input[name="old_file"]').val('');
+	})
+
+	function formCategory(element) {
+		if (element.val() == type_transfer) {
 			$('.type-transfer').show();
 			$('#category').hide();
 		} else {
 			$('.type-transfer').hide();
 			$('#category').show();
 		}
-	})
-
-	$(document).on('click', '#remove-file', function() {
-		$('#preview').html('');
-		$('#choose-file').val('');
-		$('input[name="old_file"]').val('');
-	})
+	}
 
 	function showImage(src) {
 		let html = '<img src="' + src + '"  class="w-100 h-auto">'
