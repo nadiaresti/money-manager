@@ -115,4 +115,16 @@ class GeneralHelper
 	{
 		return (double) str_replace(',', '', $value);
 	}
+
+	public static function getPeriods($interval = 5)
+	{
+		$year = date('Y');
+		$periods = [];
+
+		for ($i = $interval - 1; $i >= 0; $i--) {
+			$periods[] = $year - $i;
+		}
+
+		return $periods;
+	}
 }
